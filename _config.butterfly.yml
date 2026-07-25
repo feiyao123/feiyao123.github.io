@@ -48,9 +48,9 @@ subtitle:
   enable: true
   effect: true
   sub:
-    - 写点代码，记录生活
-    - 保持学习，保持好奇
-    - 欢迎来到 feiyao 的博客
+    - 自定义🌙🌙🌙
+    - 写点什么好呢✨✨✨
+    - 欢迎来到 feiyao 的博客⚡⚡⚡
 
 index_layout: 3
 index_post_content:
@@ -112,7 +112,7 @@ aside:
   position: right
   card_author:
     enable: true
-    description: 普通程序员 / 偶尔写写东西
+    description: 一般人 / 偶尔写写东西
     button:
       enable: true
       icon: fab fa-github
@@ -120,7 +120,7 @@ aside:
       link: https://github.com/feiyao123
   card_announcement:
     enable: true
-    content: 这里是我的个人博客，欢迎来看看。
+    content: 留个言？👾
   card_recent_post:
     enable: true
     limit: 5
