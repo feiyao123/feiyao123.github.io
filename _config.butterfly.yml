@@ -1,0 +1,212 @@
+# Butterfly 主题配置（覆盖默认值）
+
+# ===== 导航 =====
+nav:
+  display_title: true
+  fixed: true
+
+menu:
+  首页: / || fas fa-home
+  归档: /archives/ || fas fa-archive
+  分类: /categories/ || fas fa-folder-open
+  标签: /tags/ || fas fa-tags
+  关于: /about/ || fas fa-heart
+
+# ===== 社交链接 =====
+social:
+  fab fa-github: https://github.com/feiyao123 || GitHub || '#24292e'
+
+# ===== 图标 & 头像 =====
+favicon: /img/favicon.png
+
+avatar:
+  img: /img/avatar.png
+  effect: true
+
+# 首页背景图
+index_img: https://picsum.photos/1600/900
+# 默认背景图
+default_top_img: https://picsum.photos/1600/900
+# 归档页背景图
+archive_img: https://picsum.photos/1600/900
+# 标签页背景图
+tag_img: https://picsum.photos/1600/900
+# 分类页背景图
+category_img: https://picsum.photos/1600/900
+
+# 文章封面默认图（如果文章没有设置封面，从这里随机选一张）
+cover:
+  index_enable: true
+  aside_enable: true
+  archives_enable: true
+  default_cover:
+    - https://picsum.photos/400/300
+
+# ===== 首页 =====
+index_site_info_top: 40%
+subtitle:
+  enable: true
+  effect: true
+  sub:
+    - 写点代码，记录生活
+    - 保持学习，保持好奇
+    - 欢迎来到 feiyao 的博客
+
+index_layout: 3
+index_post_content:
+  method: 2
+  length: 300
+
+# ===== 文章 =====
+post_meta:
+  page:
+    date_type: created
+    date_format: date
+    categories: true
+    tags: true
+    label: true
+  post:
+    position: center
+    date_type: both
+    date_format: date
+    categories: true
+    tags: true
+    label: true
+
+toc:
+  post: true
+  page: false
+  number: true
+  expand: false
+  style_simple: false
+  scroll_percent: true
+
+post_copyright:
+  enable: true
+  license: CC BY-NC-SA 4.0
+  license_url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+related_post:
+  enable: true
+  limit: 6
+  date_type: created
+
+post_pagination: 1
+
+# ===== 页脚 =====
+footer:
+  owner:
+    enable: true
+    since: 2026
+  copyright:
+    enable: true
+    version: false
+  custom_text:
+
+# ===== 侧边栏 =====
+aside:
+  enable: true
+  hide: false
+  button: true
+  mobile: true
+  position: right
+  card_author:
+    enable: true
+    description: 普通程序员 / 偶尔写写东西
+    button:
+      enable: true
+      icon: fab fa-github
+      text: 关注我
+      link: https://github.com/feiyao123
+  card_announcement:
+    enable: true
+    content: 这里是我的个人博客，欢迎来看看。
+  card_recent_post:
+    enable: true
+    limit: 5
+  card_categories:
+    enable: true
+    limit: 8
+  card_tags:
+    enable: true
+    limit: 40
+    color: false
+    orderby: random
+  card_archives:
+    enable: true
+    type: monthly
+    format: MMMM YYYY
+    order: -1
+    limit: 8
+  card_webinfo:
+    enable: true
+    post_count: true
+    last_push_date: true
+
+# ===== 深色模式 =====
+darkmode:
+  enable: true
+  button: true
+  autoChangeMode: 1
+
+# ===== 字数统计 =====
+wordcount:
+  enable: true
+  post_wordcount: true
+  min2read: true
+  total_wordcount: true
+
+# ===== 搜索 =====
+search:
+  use: local_search
+  placeholder: 搜索文章...
+  local_search:
+    preload: true
+    top_n_per_article: 1
+    unescape: false
+
+# ===== 评论（Giscus，稍后配置具体的 repo 信息） =====
+comments:
+  use: Giscus
+  text: true
+  lazyload: false
+  count: true
+  card_post_count: true
+
+giscus:
+  repo: feiyao123/feiyao123.github.io
+  repo_id:
+  category_id:
+  light_theme: light
+  dark_theme: dark
+
+# ===== 代码块 =====
+code_blocks:
+  theme: light
+  macStyle: true
+  height_limit: false
+  word_wrap: true
+  copy: true
+  language: true
+
+# ===== 灯箱 =====
+lightbox: fancybox
+
+# ===== 预加载动画 =====
+preloader:
+  enable: true
+  source: 1
+
+# ===== 页面切换动画 =====
+enter_transitions: true
+
+# ===== 置顶按钮滚动百分比 =====
+rightside_scroll_percent: true
+
+# ===== 阅读模式 =====
+readmode: true
+
+# ===== 注入（head 或 bottom 插入自定义代码） =====
+inject:
+  head:
+  bottom:
