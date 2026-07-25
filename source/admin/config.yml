@@ -1,0 +1,23 @@
+backend:
+  name: github
+  repo: feiyao123/feiyao123.github.io
+  branch: main
+  base_url: https://YOUR_VERCEL_APP.vercel.app/api
+
+media_folder: "source/img"
+public_folder: "/img"
+
+collections:
+  - name: "posts"
+    label: "文章"
+    folder: "source/_posts"
+    create: true
+    slug: "{{slug}}"
+    editor:
+      preview: false
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD HH:mm:ss" }
+      - { label: "标签", name: "tags", widget: "list", required: false }
+      - { label: "分类", name: "categories", widget: "string", required: false }
+      - { label: "正文", name: "body", widget: "markdown" }
