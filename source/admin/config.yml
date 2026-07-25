@@ -16,7 +16,7 @@ collections:
     create: true
     slug: "{{slug}}"
     editor:
-      preview: false
+      preview: true
     fields:
       - { label: "标题", name: "title", widget: "string" }
       - { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD HH:mm:ss" }
