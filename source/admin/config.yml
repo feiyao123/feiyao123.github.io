@@ -2,7 +2,7 @@ backend:
   name: github
   repo: feiyao123/feiyao123.github.io
   branch: main
-  base_url: https://YOUR_VERCEL_APP.vercel.app/api
+  base_url: https://oauth-server-ruddy.vercel.app/api
 
 media_folder: "source/img"
 public_folder: "/img"
