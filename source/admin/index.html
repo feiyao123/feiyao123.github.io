@@ -4,8 +4,63 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>博客管理后台 - feiyao</title>
+  <style>
+    /* 头像按钮样式 */
+    header button:has(img[src*="avatars"]),
+    button[class*="Avatar"],
+    button[class*="User"] {
+      border-radius: 50% !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+      transition: transform .15s, box-shadow .15s !important;
+      overflow: hidden !important;
+    }
+    header button:has(img[src*="avatars"]):hover,
+    button[class*="Avatar"]:hover,
+    button[class*="User"]:hover {
+      transform: scale(1.1) !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
+    }
+    /* 下拉菜单样式 */
+    ul[role="menu"] {
+      border-radius: 10px !important;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12) !important;
+      overflow: hidden !important;
+      min-width: 140px !important;
+    }
+    ul[role="menu"] > li {
+      padding: 10px 20px !important;
+      font-size: 14px !important;
+    }
+  </style>
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.5.0/dist/decap-cms.js"></script>
+  <script>
+    // 等 CMS 初始化后，通过后端拿 GitHub 用户名，注入到下拉菜单
+    setTimeout(function() {
+      try {
+        var store = CMS.getStore();
+        var state = store.getState();
+        var user = state && state.auth && state.auth.user;
+        var name = (user && (user.name || user.login)) || '';
+
+        if (name) {
+          // 监听下拉菜单出现
+          new MutationObserver(function() {
+            var menu = document.querySelector('ul[role="menu"]');
+            if (menu && !menu.querySelector('[data-username]')) {
+              var li = document.createElement('li');
+              li.setAttribute('data-username', '1');
+              li.style.cssText = 'text-align:center;color:#666;border-bottom:1px solid #eee;font-weight:500;cursor:default;';
+              li.textContent = name;
+              menu.insertBefore(li, menu.firstChild);
+            }
+          }).observe(document.body, { childList: true, subtree: true });
+        }
+      } catch(e) {
+        console.log('CMS username injection skipped:', e.message);
+      }
+    }, 2000);
+  </script>
 </body>
 </html>
