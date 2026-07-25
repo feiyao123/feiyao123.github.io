@@ -1,5 +1,5 @@
 ---
-title: Hello World
+title: Hello World！
 date: 2026-07-25 20:30:00
 ---
 
