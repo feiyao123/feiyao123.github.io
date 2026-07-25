@@ -7,5 +7,21 @@
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.5.0/dist/decap-cms.js"></script>
+  <script>
+    // 隐藏预览按钮（Decap CMS 编辑器内置按钮，无配置项可移除）
+    function hidePreviewBtn() {
+      var btns = document.querySelectorAll('button');
+      btns.forEach(function(btn) {
+        var text = btn.textContent.trim();
+        if (text === '预览' || text === 'Preview') {
+          btn.style.display = 'none';
+        }
+      });
+      if (!document.querySelector('button[style*="display: none"]')) {
+        setTimeout(hidePreviewBtn, 500);
+      }
+    }
+    setTimeout(hidePreviewBtn, 2000);
+  </script>
 </body>
 </html>
