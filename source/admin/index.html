@@ -7,5 +7,75 @@
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.5.0/dist/decap-cms.js"></script>
+  <script>
+    CMS.registerLocale('zh_Hans', {
+      auth: {
+        login: '登录',
+        loginWithGitHub: '使用 GitHub 登录',
+        loggingIn: '正在登录...',
+        loginFailed: '登录失败',
+      },
+      app: {
+        header: '内容管理',
+        toast: {
+          changesPending: '有未保存的更改',
+          published: '已发布',
+          unpublished: '取消发布',
+          saved: '已保存',
+          deleted: '已删除',
+        },
+      },
+      collection: {
+        collection: '内容集合',
+        newEntry: '新建',
+        entries: '条目',
+        noEntries: '暂无内容',
+      },
+      editor: {
+        editor: '编辑器',
+        preview: '预览',
+        publish: '发布',
+        publishAndCreateNew: '发布并新建',
+        publishAndDuplicate: '发布并复制',
+        deleteEntry: '删除',
+        deleteEntryConfirm: '确定删除？',
+        unpublish: '取消发布',
+        unpublished: '未发布',
+        published: '已发布',
+        save: '保存',
+        saving: '保存中...',
+        status: '状态',
+        backToEntries: '返回列表',
+      },
+      editorWidgets: {
+        image: {
+          choose: '选择图片',
+          chooseDifferent: '更换图片',
+          remove: '移除',
+        },
+        markdown: {
+          bold: '加粗',
+          italic: '斜体',
+          code: '代码',
+          link: '链接',
+          heading: '标题',
+          quote: '引用',
+          bulletedList: '无序列表',
+          numberedList: '有序列表',
+          addImage: '添加图片',
+        },
+      },
+      mediaLibrary: {
+        mediaLibrary: '媒体库',
+        file: '文件',
+        choose: '选择',
+        dragAndDrop: '拖拽文件到这里',
+        or: '或',
+        uploading: '上传中...',
+        deleteSelected: '删除选中',
+        maxFileSize: '最大文件大小',
+      },
+    });
+  </script>
 </body>
 </html>
