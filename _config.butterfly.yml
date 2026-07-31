@@ -214,4 +214,4 @@ readmode: true
 inject:
   head:
   bottom:
-    - <script src="/js/random-cover.js" defer></script>
+    - <script src="/js/random-cover.js?v=20260731" defer></script>
