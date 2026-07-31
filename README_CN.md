@@ -33,7 +33,6 @@
 
 #### 方式一：Git 安裝（推薦）
 
-> 💡 **提示**: 如果您在中國大陸訪問 GitHub 速度較慢，可以使用 [Gitee 鏡像](https://gitee.com/immyw/hexo-theme-butterfly.git)
 
 在您的 Hexo 博客根目錄下執行：
 
@@ -147,47 +146,4 @@ npm install hexo-renderer-pug hexo-renderer-stylus --save
 
 ![主題展示](https://cdn.jsdelivr.net/gh/jerryc127/CDN@m2/img/butterfly-readme-screenshots-4.jpg)
 
-</div>
-
-
-## ⭐ Star 趨勢
-
-[![Star History Chart](https://api.star-history.com/svg?repos=jerryc127/hexo-theme-butterfly&type=Date)](https://star-history.com/#jerryc127/hexo-theme-butterfly&Date)
-
-## 🤝 一起構建更美好的主題
-
-我們相信，**開源的力量來自於每一個人的參與**！無論您是開發者、設計師還是用戶，都可以為 Butterfly 主題的發展貢獻力量。
-
-### 💬 獲取幫助與支援
-
-- 🐛 **發現問題？** → [GitHub Issues](https://github.com/jerryc127/hexo-theme-butterfly/issues) - 讓我們一起解決！
-- 💡 **有好想法？** → [GitHub Discussions](https://github.com/jerryc127/hexo-theme-butterfly/discussions) - 分享您的創意想法！
-- 📚 **學習使用？** → [官方文檔](https://butterfly.js.org/) - 詳細的使用指南
-- 💬 **即時討論？** → [Telegram 群組](https://t.me/bu2fly) - 與社群成員實時交流
-
-### 🎯 參與貢獻
-
-想要讓 Butterfly 變得更好嗎？我們歡迎您的任何形式的貢獻：
-
-- **🔧 代碼貢獻** - 修復 Bug、添加新功能、優化性能
-- **📝 文檔完善** - 改進文檔、翻譯內容、撰寫教程
-- **🎨 設計建議** - UI/UX 改進、主題配色、圖示設計
-- **🧪 測試反饋** - 測試新功能、回報問題、提供使用體驗
-- **💰 資金支援** - [贊助項目](https://buy.stripe.com/3cs6rP6YA91sbbG5kk) - 支持長期發展
-
-## 📄 授權條款
-
-本專案採用 [Apache 2.0](LICENSE) 授權條款。
-
-## 🙏 致敬與感謝
-
-本主題基於 [hexo-theme-melody](https://github.com/Molunerfinn/hexo-theme-melody) 進行開發，感謝原作者的精彩創作為我們提供了靈感與基礎！
-
-感謝所有為 Butterfly 主題發展做出貢獻的朋友們，是你們的支持讓這個主題能夠不斷完善與進步。
-
----
-
-<div align="center">
-
-**✨ 如果這個主題對您有幫助，請給我們一個 ⭐ Star！✨**
 </div>
