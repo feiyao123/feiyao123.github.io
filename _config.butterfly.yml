@@ -26,7 +26,7 @@ avatar:
 # 首页背景图
 index_img: https://picsum.photos/1600/900
 # 默认背景图
-default_top_img: https://picsum.photos/1600/900
+default_top_img: https://picsum.photos/seed/blog-top/1600/900
 # 归档页背景图
 archive_img: https://picsum.photos/1600/900
 # 标签页背景图
@@ -40,7 +40,11 @@ cover:
   aside_enable: true
   archives_enable: true
   default_cover:
-    - https://picsum.photos/400/300
+    - https://picsum.photos/seed/blog-1/400/300
+    - https://picsum.photos/seed/blog-2/400/300
+    - https://picsum.photos/seed/blog-3/400/300
+    - https://picsum.photos/seed/blog-4/400/300
+    - https://picsum.photos/seed/blog-5/400/300
 
 # ===== 首页 =====
 index_site_info_top: 40%
@@ -210,3 +214,4 @@ readmode: true
 inject:
   head:
   bottom:
+    - <script src="/js/random-cover.js" defer></script>
