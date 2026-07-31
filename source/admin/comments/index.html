@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>评论管理 - feiyao 博客</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f7; color: #333; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 80px; }
+  h1 { font-size: 22px; margin-bottom: 6px; }
+  .sub { color: #888; font-size: 13px; margin-bottom: 20px; }
+  .card { background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.08); padding: 16px 18px; margin-bottom: 16px; }
+  button { cursor: pointer; border: none; border-radius: 6px; padding: 8px 14px; font-size: 14px; }
+  .btn-primary { background: #2da44e; color: #fff; }
+  .btn-primary:hover { background: #2c974b; }
+  .btn-danger { background: #d1242f; color: #fff; }
+  .btn-danger:hover { background: #b81b26; }
+  .btn-danger:disabled { background: #e5b0b3; cursor: not-allowed; }
+  .btn-ghost { background: #eee; color: #333; }
+  .btn-ghost:hover { background: #e2e2e2; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .search { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+  .status { padding: 12px; text-align: center; color: #666; }
+  .login-box { text-align: center; padding: 40px 20px; }
+  .login-box p { color: #888; font-size: 13px; margin-top: 12px; }
+  .post { border-bottom: 1px solid #eee; padding: 10px 0 14px; }
+  .post:last-child { border-bottom: none; }
+  .post-title { font-size: 15px; font-weight: 600; margin-bottom: 10px; word-break: break-all; }
+  .comment { display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid #f3f3f3; align-items: flex-start; }
+  .comment:first-of-type { border-top: none; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; background: #ddd; }
+  .c-main { flex: 1; min-width: 0; }
+  .c-meta { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .c-meta .author { color: #444; font-weight: 600; }
+  .c-body { font-size: 14px; line-height: 1.6; word-break: break-word; white-space: pre-wrap; }
+  .c-replies { font-size: 12px; color: #b00; margin-top: 4px; }
+  .del { flex-shrink: 0; font-size: 12px; padding: 4px 10px; }
+  .mask { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: none; align-items: center; justify-content: center; z-index: 100; }
+  .mask.show { display: flex; }
+  .modal { background: #fff; border-radius: 10px; max-width: 520px; width: 92%; padding: 20px; }
+  .modal h3 { font-size: 16px; margin-bottom: 12px; }
+  .modal .quote { background: #f7f7f9; border-left: 3px solid #d1242f; padding: 10px; border-radius: 4px; font-size: 13px; color: #555; max-height: 160px; overflow-y: auto; white-space: pre-wrap; margin-bottom: 10px; }
+  .modal .warn { color: #d1242f; font-size: 13px; margin-bottom: 16px; }
+  .modal .btns { display: flex; justify-content: flex-end; gap: 10px; }
+  .muted { color: #999; font-size: 12px; }
+  .no-result { color: #999; text-align: center; padding: 30px 0; }
+  #count { font-size: 12px; color: #888; margin: 8px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>评论管理</h1>
+  <p class="sub">仅博主可删。数据来自 GitHub Discussions（Giscus 评论系统）</p>
+
+  <!-- 登录区 -->
+  <div class="card login-box" id="loginBox" style="display:none">
+    <button class="btn-primary" id="loginBtn">用 GitHub 登录</button>
+    <p>登录后即可查看并删除评论。只有仓库管理员（你本人）有删除权限。</p>
+  </div>
+
+  <!-- 主界面 -->
+  <div id="main" style="display:none">
+    <div class="topbar">
+      <input class="search" id="searchBox" type="text" placeholder="搜索评论内容…（留空显示全部）">
+      <button class="btn-ghost" id="logoutBtn" style="margin-left:10px; white-space:nowrap;">退出登录</button>
+    </div>
+    <div id="count"></div>
+    <div id="status" class="status"></div>
+    <div id="list"></div>
+  </div>
+</div>
+
+<!-- 删除确认弹窗 -->
+<div class="mask" id="mask">
+  <div class="modal">
+    <h3>确认删除这条评论？</h3>
+    <div class="quote" id="confirmBody"></div>
+    <div class="warn" id="confirmWarn"></div>
+    <div class="btns">
+      <button class="btn-ghost" id="cancelBtn">取消</button>
+      <button class="btn-danger" id="confirmBtn">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ============ 配置 ============
+  var OAUTH_URL = 'https://oauth-server-ruddy.vercel.app/auth?provider=github&scope=repo';
+  var GQL_ENDPOINT = 'https://api.github.com/graphql';
+  var OWNER = 'feiyao123';
+  var REPO = 'feiyao123.github.io';
+  var TOKEN_KEY = 'github_token';
+
+  // ============ 元素引用 ============
+  var loginBox = document.getElementById('loginBox');
+  var main = document.getElementById('main');
+  var loginBtn = document.getElementById('loginBtn');
+  var logoutBtn = document.getElementById('logoutBtn');
+  var searchBox = document.getElementById('searchBox');
+  var statusEl = document.getElementById('status');
+  var listEl = document.getElementById('list');
+  var countEl = document.getElementById('count');
+  var mask = document.getElementById('mask');
+  var confirmBody = document.getElementById('confirmBody');
+  var confirmWarn = document.getElementById('confirmWarn');
+  var cancelBtn = document.getElementById('cancelBtn');
+  var confirmBtn = document.getElementById('confirmBtn');
+
+  var allComments = [];   // 扁平缓存 [{discussion, id, body, createdAt, login, avatar, viewerCanDelete, replies}]
+  var pendingDelete = null; // 待删除的评论
+  var loading = false;
+
+  // ============ 登录 ============
+  function getToken() { return sessionStorage.getItem(TOKEN_KEY); }
+  function setToken(t) { sessionStorage.setItem(TOKEN_KEY, t); }
+  function clearToken() { sessionStorage.removeItem(TOKEN_KEY); }
+
+  function renderState() {
+    var hasToken = !!getToken();
+    loginBox.style.display = hasToken ? 'none' : 'block';
+    main.style.display = hasToken ? 'block' : 'none';
+    if (hasToken) loadComments();
+  }
+
+  loginBtn.addEventListener('click', function () {
+    var w = window.open(OAUTH_URL, 'github-auth', 'width=800,height=640');
+    if (!w) { setStatus('浏览器拦截了弹窗，请允许本站弹出窗口后重试。'); }
+  });
+
+  logoutBtn.addEventListener('click', function () {
+    clearToken();
+    allComments = [];
+    listEl.innerHTML = '';
+    renderState();
+  });
+
+  // postMessage 登录协议（与 oauth-server callback 页配对）
+  window.addEventListener('message', function (event) {
+    if (event.data === 'authorizing:github') {
+      event.source.postMessage('authorizing:github', event.origin);
+    } else if (typeof event.data === 'string' && event.data.indexOf('authorization:github:success:') === 0) {
+      var json = event.data.replace('authorization:github:success:', '');
+      try {
+        var parsed = JSON.parse(json);
+        if (parsed && parsed.token) {
+          setToken(parsed.token);
+          renderState();
+        }
+      } catch (e) { /* ignore malformed */ }
+    }
+  });
+
+  // ============ GitHub GraphQL ============
+  function gql(query, variables) {
+    return fetch(GQL_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + getToken()
+      },
+      body: JSON.stringify({ query: query, variables: variables })
+    }).then(function (res) {
+      if (res.status === 401) { throw new Error('UNAUTHORIZED'); }
+      return res.json();
+    }).then(function (data) {
+      if (data.errors) throw new Error(data.errors.map(function (e) { return e.message; }).join('; '));
+      return data.data;
+    });
+  }
+
+  function loadComments() {
+    if (loading) return;
+    loading = true;
+    setStatus('正在加载评论…');
+    listEl.innerHTML = '';
+    allComments = [];
+
+    var discussions = [];
+    var cursor = null;
+    var hasMore = true;
+
+    // 逐页拉取所有 discussion（文章的评论区）
+    var queryDiscussions = 'query ($owner: String!, $name: String!, $cursor: String) {' +
+      '  repository(owner: $owner, name: $name) {' +
+      '    discussions(first: 100, after: $cursor) {' +
+      '      pageInfo { hasNextPage endCursor }' +
+      '      nodes { title comments(first: 100) {' +
+      '        pageInfo { hasNextPage endCursor }' +
+      '        nodes { id body createdAt viewerCanDelete' +
+      '          author { login avatarUrl }' +
+      '          replies(first: 0) { totalCount }' +
+      '        }' +
+      '      } }' +
+      '    }' +
+      '  }' +
+      '}';
+
+    function fetchPage() {
+      return gql(queryDiscussions, { owner: OWNER, name: REPO, cursor: cursor }).then(function (data) {
+        var repo = data && data.repository;
+        if (!repo || !repo.discussions) return;
+        var page = repo.discussions;
+        discussions = discussions.concat(page.nodes || []);
+        hasMore = page.pageInfo.hasNextPage;
+        cursor = page.pageInfo.endCursor;
+        if (hasMore) return fetchPage();
+      });
+    }
+
+    fetchPage().then(function () {
+      discussions.forEach(function (d) {
+        var disc = { title: d.title, comments: [] };
+        (d.comments && d.comments.nodes || []).forEach(function (c) {
+          disc.comments.push(c);
+        });
+        if (disc.comments.length) allComments.push(disc);
+      });
+      renderList();
+    }).catch(function (err) {
+      if (err.message === 'UNAUTHORIZED') {
+        clearToken();
+        setStatus('登录已失效，请重新登录。');
+        renderState();
+      } else {
+        setStatus('加载失败：' + err.message);
+      }
+    }).then(function () { loading = false; });
+  }
+
+  // ============ 渲染 ============
+  function formatTime(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    var p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+
+  function renderList() {
+    var kw = searchBox.value.trim().toLowerCase();
+    var total = 0;
+    var html = '';
+
+    allComments.forEach(function (disc) {
+      var list = disc.comments.filter(function (c) {
+        return !kw || (c.body || '').toLowerCase().indexOf(kw) >= 0;
+      });
+      if (!list.length) return;
+      total += list.length;
+
+      html += '<div class="card post"><div class="post-title">' + escapeHtml(displayTitle(disc.title)) + '</div>';
+      list.forEach(function (c) {
+        var author = (c.author && c.author.login) || '匿名';
+        var avatar = (c.author && c.author.avatarUrl) || '';
+        var canDel = c.viewerCanDelete;
+        html += '<div class="comment">' +
+          '<img class="avatar" alt="" src="' + (avatar || 'data:image/gif;base64,R0lGODlhAQABAAAAACw=') + '">' +
+          '<div class="c-main">' +
+          '<div class="c-meta"><span class="author">' + escapeHtml(author) + '</span> · ' + formatTime(c.createdAt) + '</div>' +
+          '<div class="c-body">' + escapeHtml(c.body) + '</div>' +
+          (c.replies && c.replies.totalCount > 0 ? '<div class="c-replies">⚠ 此评论含 ' + c.replies.totalCount + ' 条回复，删除会连同回复一起清除</div>' : '') +
+          '</div>' +
+          '<button class="del btn-danger" data-id="' + c.id + '" data-title="' + escapeHtml(disc.title) + '" ' + (canDel ? '' : 'disabled title="无删除权限"') + '>' + (canDel ? '删除' : '不可删') + '</button>' +
+          '</div>';
+      });
+      html += '</div>';
+    });
+
+    if (!total) {
+      html = '<div class="no-result">' + (allComments.length ? '没有匹配的评论' : '暂无评论') + '</div>';
+    }
+
+    countEl.textContent = '共 ' + total + ' 条评论' + (kw ? '（已按关键词过滤）' : '');
+    listEl.innerHTML = html;
+    setStatus('');
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function displayTitle(t) {
+    try { return decodeURIComponent(t); } catch (e) { return t; }
+  }
+
+  function setStatus(msg) { statusEl.textContent = msg; }
+
+  searchBox.addEventListener('input', renderList);
+
+  // ============ 删除 ============
+  listEl.addEventListener('click', function (e) {
+    var btn = e.target.closest('button.del');
+    if (!btn || btn.disabled) return;
+    var id = btn.getAttribute('data-id');
+    // 找到对应评论
+    allComments.some(function (disc) {
+      return disc.comments.some(function (c) {
+        if (c.id === id) { pendingDelete = c; return true; }
+        return false;
+      });
+    });
+    if (pendingDelete) openConfirm();
+  });
+
+  function openConfirm() {
+    confirmBody.textContent = (pendingDelete.body || '（空内容）');
+    var author = (pendingDelete.author && pendingDelete.author.login) || '匿名';
+    var replies = pendingDelete.replies ? pendingDelete.replies.totalCount : 0;
+    confirmWarn.textContent = '作者：' + author + (replies > 0 ? ' ｜ 该评论含 ' + replies + ' 条回复，删除会连同回复一并清除。' : '');
+    mask.classList.add('show');
+  }
+
+  cancelBtn.addEventListener('click', closeConfirm);
+
+  confirmBtn.addEventListener('click', function () {
+    if (!pendingDelete) return;
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = '删除中…';
+
+    var mutation = 'mutation DeleteComment($id: ID!) {' +
+      '  deleteDiscussionComment(input: { id: $id }) { clientMutationId }' +
+      '}';
+
+    gql(mutation, { id: pendingDelete.id }).then(function () {
+      // 成功：从缓存和 DOM 移除
+      allComments.forEach(function (disc) {
+        disc.comments = disc.comments.filter(function (c) { return c.id !== pendingDelete.id; });
+      });
+      allComments = allComments.filter(function (disc) { return disc.comments.length; });
+      closeConfirm();
+      renderList();
+    }).catch(function (err) {
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = '确认删除';
+      if (err.message === 'UNAUTHORIZED') {
+        clearToken();
+        closeConfirm();
+        renderState();
+      } else {
+        alert('删除失败：' + err.message);
+      }
+    });
+  });
+
+  function closeConfirm() {
+    pendingDelete = null;
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = '确认删除';
+    mask.classList.remove('show');
+  }
+
+  mask.addEventListener('click', function (e) {
+    if (e.target === mask) closeConfirm();
+  });
+
+  // ============ 启动 ============
+  renderState();
+})();
+</script>
+</body>
+</html>
