@@ -116,7 +116,7 @@ aside:
   position: right
   card_author:
     enable: true
-    description: 一般人 / 偶尔写写东西
+    description: 麻木不仁的日子里，记录即是反抗
     button:
       enable: true
       icon: fab fa-github
