@@ -8,3 +8,5 @@ public/
 db.json
 *.log
 .vercel
+.claude/
+skills-lock.json
