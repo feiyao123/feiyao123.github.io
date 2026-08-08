@@ -1,0 +1,26 @@
+backend:
+  name: github
+  repo: feiyao123/feiyao123.github.io
+  branch: main
+  base_url: https://oauth-server-ruddy.vercel.app
+
+locale: zh_Hans
+
+media_folder: "source/img"
+public_folder: "/img"
+
+collections:
+  - name: "posts"
+    label: "文章"
+    folder: "source/_posts"
+    create: true
+    slug: "{{slug}}"
+    editor:
+      preview: false
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD HH:mm:ss" }
+      - { label: "标签", name: "tags", widget: "list", required: false, hint: "输入后按回车添加" }
+      - { label: "分类", name: "categories", widget: "list", required: false, hint: '可填单个，如"生活"' }
+      - { label: "封面图", name: "cover", widget: "image", required: false }
+      - { label: "正文", name: "body", widget: "markdown" }

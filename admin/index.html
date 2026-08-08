@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>博客管理后台 - feiyao</title>
+  <style>
+    #commentsEntry {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 999999;
+      background: #2da44e;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.25);
+    }
+    #commentsEntry:hover { background: #2c974b; }
+  </style>
+</head>
+<body>
+  <!-- 评论管理浮动入口（Decap 是 SPA 接管页面，用固定定位 + 高 z-index 保证浮在界面上层） -->
+  <a id="commentsEntry" href="/admin/comments/" title="进入评论管理">💬 评论管理</a>
+  <script src="https://unpkg.com/decap-cms@^3.5.0/dist/decap-cms.js"></script>
+  <script>
+    // 隐藏预览按钮（Decap CMS 编辑器内置按钮，无配置项可移除）
+    function hidePreviewBtn() {
+      var btns = document.querySelectorAll('button');
+      btns.forEach(function(btn) {
+        var text = btn.textContent.trim();
+        if (text === '预览' || text === 'Preview') {
+          btn.style.display = 'none';
+        }
+      });
+      if (!document.querySelector('button[style*="display: none"]')) {
+        setTimeout(hidePreviewBtn, 500);
+      }
+    }
+    setTimeout(hidePreviewBtn, 2000);
+
+    // 评论管理浮动按钮保活：Decap 接管页面若把它清掉了，自动补回来
+    (function keepCommentsEntry() {
+      if (!document.getElementById('commentsEntry')) {
+        var a = document.createElement('a');
+        a.id = 'commentsEntry';
+        a.href = '/admin/comments/';
+        a.title = '进入评论管理';
+        a.textContent = '💬 评论管理';
+        document.body.appendChild(a);
+      }
+      setTimeout(keepCommentsEntry, 1500);
+    })();
+  </script>
+</body>
+</html>
